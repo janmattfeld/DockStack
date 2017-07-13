@@ -6,4 +6,5 @@ services:
 language: C
 
 # Travis-CI fails on Open vSwitch setup with 'Cannot find device "br-ex"'
+# TODO: Try "ovs-vsctl add-port br-ex eth2"
 script: make build
