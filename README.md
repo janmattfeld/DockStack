@@ -61,28 +61,28 @@ make
 
 The first run can take up to 50 minutes, downloading all Ubuntu and Python packages. Subsequent container starts are much faster because of the Docker cache.
 
-Open Horizon at the displayed address or enter the running container directly with
-
-```bash
-make bash
-```
-
 Start a Cirros container via Zun
 
 ```bash
 make test
 ```
 
-More information can be found here [5].
+More information on Zun can be found here [5].
+
+Check your installation via Horizon at the displayed address or enter the running container directly with
+
+```bash
+make bash
+```
 
 [5]: https://docs.openstack.org/zun/latest/dev/quickstart.html
 
 ### Lifecycle
 
-Altough a container restart is faster than a complete build, it still takes up to 20 minutes. So for experimenting
+Altough a container restart is faster than a complete build, it still takes up to 20 minutes. So for experimenting use
 
-- save your running DevStack into the image via `docker commit`
-- use Docker checkpoints [6] (experimental)
-- if it works, use the classic `/devstack/unstack.sh` and `/devstack/stack.sh`
+- `docker commit` to save your running DevStack into the image
+- Docker checkpoints [6] (experimental)
+- the classic workflow of `/devstack/unstack.sh` and `/devstack/stack.sh`
 
 [6]: https://criu.org/Docker
