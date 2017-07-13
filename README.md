@@ -32,7 +32,7 @@ Running Docker on DevStack actually has been done before [[3]]. We add the follo
 2. systemd [[7]]
 3. OpenStack Ocata and Pike
 4. libvirt/QEMU instance support
-5. Zun [[5]] instead of the deprecated Nova Docker
+5. Zun instead of the deprecated Nova Docker
 6. container-adjusted DevStack configuration
 
 [3]: https://github.com/ewindisch/dockenstack
@@ -62,15 +62,15 @@ $ make
 
 The first run can take up to 50 minutes, downloading all Ubuntu and Python packages. Subsequent container starts are much faster because of the Docker cache.
 
-## Usage
+### Usage
 
-- Start a Cirros container via Zun with `make test`. More information on Zun [[5]].
+- Start a Cirros container via Zun with `make test`.
 - Check your installation via Horizon at the displayed address.
 - Enter the running container directly with `make bash`.
 
 [5]: https://docs.openstack.org/zun/latest/dev/quickstart.html
 
-## Configuration
+### Configuration
 
 Feel free to adjust the file `local.conf` for your needs [[8]].
 
