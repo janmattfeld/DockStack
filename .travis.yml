@@ -5,4 +5,5 @@ services:
 
 language: C
 
-script: make
+# Travis-CI fails on Open vSwitch setup with 'Cannot find device "br-ex"'
+script: make build
