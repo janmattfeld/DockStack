@@ -1,1 +1,8 @@
+.dockerignore
+.editorconfig
+.git
+.travis.yml
+Dockerfile
+LICENSE
 Makefile
+README.md

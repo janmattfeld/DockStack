@@ -43,11 +43,10 @@ CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
 ####################
 # DevStack Preload #
 ####################
-ARG BRANCH=master
-
+ARG DEVSTACK_BRANCH="master"
+ARG PROJECTS_BRANCH="master"
 # This OpenStack project repositories will be downloaded
 ARG PROJECTS=" \
-        requirements \
         keystone \
         nova \
         neutron \
@@ -57,7 +56,6 @@ ARG PROJECTS=" \
         zun-ui \
         kuryr-libnetwork \
     "
-
 # Get Missing External System Dependencies for DevStack Setup
 RUN apt-get update && apt-get --assume-yes --no-install-recommends install \
         # To Retrieve Fresh DevStack Sources
@@ -84,16 +82,17 @@ RUN apt-get update && apt-get --assume-yes --no-install-recommends install \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Clone DevStack, Requirements and OpenStack (Core) Projects
-RUN git clone git://git.openstack.org/openstack-dev/devstack \
-        # To properly detect a container environment, we need at least openstack-dev/devstack/commit/63666a2
-        --branch master && \
+#  - To properly detect a container environment,
+#    we need at least openstack-dev/devstack/commit/63666a2
+RUN git clone git://git.openstack.org/openstack-dev/devstack --branch $DEVSTACK_BRANCH && \
+    git clone git://git.openstack.org/openstack/requirements --branch $DEVSTACK_BRANCH /opt/stack/requirements && \
     for \
         PROJECT in $PROJECTS; \
     do \
         git clone \
             git://git.openstack.org/openstack/$PROJECT.git \
             /opt/stack/$PROJECT \
-            --branch $BRANCH \
+            --branch $PROJECTS_BRANCH \
             --depth 1 \
             --single-branch; \
     done
@@ -102,7 +101,7 @@ RUN git clone git://git.openstack.org/openstack-dev/devstack \
 RUN /devstack/tools/install_prereqs.sh \
     # Install Additional Packages MySQL and RabbitMQ
     #  - TODO: Find all needed packages in $(grep --no-filename NOPRIME /devstack/files/apts/* | sed '/dist/d; s/\s*#.*//;')
-    #  - TODO: If actually everything is in place, we could set OFFLINE=True in local.conf
+    #  - TODO: If everything is actually in place, we could set OFFLINE=True in local.conf
     && echo 'mysql-server mysql-server/root_password password secret' | debconf-set-selections \
     && echo 'mysql-server mysql-server/root_password_again password secret' | debconf-set-selections \
     && apt-get update && apt-get --assume-yes --no-install-recommends install \
@@ -127,9 +126,10 @@ RUN useradd --shell /bin/bash --home-dir /opt/stack/ stack \
     && echo "stack ALL=(ALL) NOPASSWD: ALL" | tee /etc/sudoers.d/stack \
     && sudo chown --recursive stack /devstack/
 
+# Copy DevStack configuration, if file has changed
 COPY local.conf /devstack/
 
-# This container starts systemd, so do not add an additional Docker CMD! 
+# This container starts systemd, so do not add an additional Docker CMD!
 # Place any post-start calls in the Makefile.
 
 # Actual DevStack setup has to happen in a running container,

@@ -1,10 +1,10 @@
-NAME=devstack2
+NAME=devstack
 
-.PHONY: all build clean run stop test
+.PHONY: all bash build clean lint run stop test
 
-all: build run
+all: lint build run test
 
-stop: 
+stop:
 	docker ps \
 		--quiet \
 		--filter ancestor=$(NAME) \
@@ -16,19 +16,27 @@ clean: stop
 	docker system prune \
 		--force
 
+lint:
+	docker run \
+		--tty \
+		--interactive \
+		--rm \
+		--volume "$(PWD)/Dockerfile:/Dockerfile:ro" \
+		redcoolbeans/dockerlint
+
 build:
 	docker build \
 		--tag $(NAME) \
 		.
 
-# TODO: Documentation of tmpfs and volumes
+# Beware: This container runs in privileged mode!
+#  - https://github.com/moby/moby/issues/24387#issuecomment-249195810
+# TODO: Specify least needed rights and mounts
+#  - https://github.com/solita/docker-systemd 
 run:
 	docker run \
 		--name $(NAME) \
 		--privileged \
-		--tmpfs /run \
-		--tmpfs /run/lock \
-		--volume /sys/fs/cgroup:/sys/fs/cgroup:ro \
 		--detach \
 		$(NAME)
 	docker exec \
@@ -37,5 +45,19 @@ run:
 		$(NAME) \
 		bash -c "su stack -c '/devstack/stack.sh'"
 
-# TODO: Add a container and ping 8.8.8.8
 test:
+	docker exec \
+		--tty \
+		--interactive \
+		$(NAME) \
+		bash -c "su stack -c '\
+			source /devstack/openrc admin admin && \
+			zun run --name test cirros ping -c 4 8.8.8.8 \
+		'"
+
+bash:
+	docker exec \
+		--tty \
+		--interactive \
+		$(NAME) \
+		bash
