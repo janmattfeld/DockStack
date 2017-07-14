@@ -1,4 +1,4 @@
-NAME=devstack
+NAME=dockstack
 
 .PHONY: all bash build clean lint run stop test
 
@@ -27,6 +27,9 @@ lint:
 build:
 	docker build \
 		--tag $(NAME) \
+		--build-arg BUILD_DATE=`date --utc +"%Y-%m-%dT%H:%M:%SZ"` \
+		--build-arg VCS_REF=`git rev-parse --short HEAD` \
+		--build-arg VERSION="test" \
 		.
 
 # Beware: This container runs in privileged mode!

@@ -1,7 +1,5 @@
 FROM ubuntu:16.04
 
-LABEL maintainer="dev-dockstack@janmattfeld.de"
-
 EXPOSE \
     # OpenStack Dashboard (Horizon)
         80 \
@@ -43,19 +41,6 @@ CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]
 ####################
 # DevStack Preload #
 ####################
-ARG DEVSTACK_BRANCH="master"
-ARG PROJECTS_BRANCH="master"
-# This OpenStack project repositories will be downloaded
-ARG PROJECTS=" \
-        keystone \
-        nova \
-        neutron \
-        glance \
-        horizon \
-        zun \
-        zun-ui \
-        kuryr-libnetwork \
-    "
 # Get Missing External System Dependencies for DevStack Setup
 RUN apt-get update && apt-get --assume-yes --no-install-recommends install \
         # To Retrieve Fresh DevStack Sources
@@ -81,6 +66,19 @@ RUN apt-get update && apt-get --assume-yes --no-install-recommends install \
     # Cleanup
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
+ARG DEVSTACK_BRANCH="master"
+ARG PROJECTS_BRANCH="master"
+# This OpenStack project repositories will be downloaded
+ARG PROJECTS=" \
+        keystone \
+        nova \
+        neutron \
+        glance \
+        horizon \
+        zun \
+        zun-ui \
+        kuryr-libnetwork \
+    "
 # Clone DevStack, Requirements and OpenStack (Core) Projects
 #  - To properly detect a container environment,
 #    we need at least openstack-dev/devstack/commit/63666a2
@@ -134,3 +132,18 @@ COPY local.conf /devstack/
 
 # Actual DevStack setup has to happen in a running container,
 # because of missing privileges during Docker build.
+
+# Thats's right, we add ARGs and dependent labels at the end, because they will change on every build
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+LABEL org.label-schema.build-date=$BUILD_DATE \
+        org.label-schema.name="DockStack" \
+        org.label-schema.description="Docker on DevStack on Docker" \
+        org.label-schema.version=$VERSION-$BUILD_DATE-git-$VCS_REF \
+        org.label-schema.vendor="Jan Mattfeld" \
+        org.label-schema.vcs-url="https://github.com/janmattfeld/DockStack" \
+        org.label-schema.vcs-ref=$VCS_REF \
+        org.label-schema.docker.cmd="docker run --privileged --detach devstack " \
+        org.label-schema.docker.params="DEVSTACK_BRANCH, PROJECTS_BRANCH, PROJECTS" \
+        org.label-schema.schema-version="1.0"
