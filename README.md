@@ -34,6 +34,7 @@ Running Docker on DevStack actually has been done before [[3]]. We add the follo
 4. libvirt/QEMU instance support
 5. Zun instead of the deprecated Nova Docker
 6. container-adjusted DevStack configuration
+7. Network configuration
 
 [3]: https://github.com/ewindisch/dockenstack
 [7]: https://docs.openstack.org/devstack/latest/systemd.html
@@ -58,6 +59,17 @@ The `Makefile` includes a complete Docker lifecycle. Image build and DevStack in
 $ git clone https://github.com/janmattfeld/DockStack.git
 $ cd DockStack
 $ make
+
+This is your host IP address: 172.17.0.2
+Horizon is now available at http://172.17.0.2/dashboard
+Keystone is serving at http://172.17.0.2/identity/
+The default users are: admin and demo
+The password: secret
+
+Services are running under systemd unit files.
+
+DevStack Version: pike
+OS Version: Ubuntu 16.04 xenial
 ```
 
 The first run can take up to 50 minutes, downloading all Ubuntu and Python packages. Subsequent container starts are much faster because of the Docker cache.
@@ -79,16 +91,21 @@ Internet access for OpenStack instances
 Reaching an OpenStack instance from your host through Docker
 
 1. Add custom rules to the default security group
-```
+
+```text
 Ping: Ingress, IPv4, ICMP, Any, 0.0.0.0/0
 ```
+
 2. On your host: Route to instances through docker instead of the (here unusable) Open vSwitch/Neutron interface br-ex
 
 ```bash
 $ ip route
 172.24.4.0/24 dev br-ex proto kernel scope link src 172.24.4.1
+
 $ sudo ip route del 172.24.4.0/24
+
 $ sudo ip route add 172.24.4.0/24 via 172.17.0.2
+
 $ ip route
 172.24.4.0/24 via 172.17.0.2 dev docker0
 ```
