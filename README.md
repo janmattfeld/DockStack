@@ -55,7 +55,7 @@ Running Docker on DevStack actually has been done before [[3]]. We add the follo
 
 The `Makefile` includes a complete Docker lifecycle. Image build and DevStack installation are simply started with
 
-```bash
+```console
 $ git clone https://github.com/janmattfeld/DockStack.git
 $ cd DockStack
 $ make
@@ -98,7 +98,7 @@ Ping: Ingress, IPv4, ICMP, Any, 0.0.0.0/0
 
 2. On your host: Route to instances through docker instead of the (here unusable) Open vSwitch/Neutron interface br-ex
 
-```bash
+```console
 $ ip route
 172.24.4.0/24 dev br-ex proto kernel scope link src 172.24.4.1
 
