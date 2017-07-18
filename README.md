@@ -20,9 +20,12 @@ So, get a virtual machine and all of the above problems would be gone! Except fo
 
 Running inside `LXD` containers might also be an option. They support multiple processes and feel more like a classic VM. Actually, they focus on IaaS [[1]]. However, an LXD-DevStack setup challenges just as much as on Docker [[2]], [[9]].
 
+Also note OpenStack Kolla, which builds individual Docker containers for every project [[10]].
+
 [1]: https://www.ubuntu.com/containers/lxd
 [2]: https://stgraber.org/2016/10/26/lxd-2-0-lxd-and-openstack-1112/
 [9]: https://docs.openstack.org/devstack/latest/guides/lxc.html
+[10]: https://cloudbase.it/openstack-kolla-hyper-v/
 
 ### Not invented here
 
