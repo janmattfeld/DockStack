@@ -64,11 +64,34 @@ The first run can take up to 50 minutes, downloading all Ubuntu and Python packa
 
 ### Usage
 
+- Enter the main DevStack container directly with `make bash`.
 - Start a Cirros container via Zun with `make test`.
 - Check your installation via Horizon at the displayed address.
-- Enter the running container directly with `make bash`.
 
 [5]: https://docs.openstack.org/zun/latest/dev/quickstart.html
+
+### Network
+
+Internet access for OpenStack instances
+
+1. Edit the `public-subnet` and enable DHCP with a custom DNS server i. e. `8.8.8.8`.
+
+Reaching an OpenStack instance from your host through Docker
+
+1. Add custom rules to the default security group
+```
+Ping: Ingress, IPv4, ICMP, Any, 0.0.0.0/0
+```
+2. On your host: Route to instances through docker instead of the (here unusable) Open vSwitch/Neutron interface br-ex
+
+```bash
+$ ip route
+172.24.4.0/24 dev br-ex proto kernel scope link src 172.24.4.1
+$ sudo ip route del 172.24.4.0/24
+$ sudo ip route add 172.24.4.0/24 via 172.17.0.2
+$ ip route
+172.24.4.0/24 via 172.17.0.2 dev docker0
+```
 
 ### Configuration
 
