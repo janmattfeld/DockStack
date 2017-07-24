@@ -52,7 +52,10 @@ Running Docker on DevStack actually has been done before [[3]]. We add the follo
 
 **Magnum** (Orchestration), a self-service solution to provision and manage a Kubernetes (or other COEs) cluster
 
+And some more. Get an overview [[13]].
+
 [4]: https://wiki.openstack.org/wiki/Docker
+[13]: https://de.slideshare.net/openstackindia/state-of-containers-in-openstack
 
 ## Quickstart
 
