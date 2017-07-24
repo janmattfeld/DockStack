@@ -89,7 +89,7 @@ The first run can take up to 50 minutes, downloading all Ubuntu and Python packa
 
 Internet access for OpenStack instances
 
-1. Edit the `public-subnet` and enable DHCP with a custom DNS server i. e. `8.8.8.8`.
+- Edit the `public-subnet` and enable DHCP with a custom DNS server i. e. `8.8.8.8`.
 
 Reaching an OpenStack instance from your host through Docker
 
@@ -112,6 +112,23 @@ $ sudo ip route add 172.24.4.0/24 via 172.17.0.2
 $ ip route
 172.24.4.0/24 via 172.17.0.2 dev docker0
 ```
+
+### Zun Troubleshooting
+
+Pulling a new Docker image might fail with `'module' object has no attribute 'get_config_header'` because of an old `docker-py` version [[11]] [[12]].
+
+```console
+# Remove any Docker SDK artifacts
+pip uninstall docker docker-py
+rm -rf /usr/local/lib/python2.7/site-packages/docker/auth/
+# Get the current version, now just called `docker`
+pip install docker
+# Make Zun aware of the new Docker library
+sudo systemctl restart devstack@zun*
+```
+
+[11]: https://github.com/docker/docker-py/issues/1353
+[12]: https://review.openstack.org/#/c/475526/
 
 ### Configuration
 
