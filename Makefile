@@ -2,7 +2,7 @@ NAME=dockstack
 
 .PHONY: all bash build clean lint run stop test
 
-all: lint build run test
+all: build run test
 
 stop:
 	docker ps \
