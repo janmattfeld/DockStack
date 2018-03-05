@@ -1,6 +1,8 @@
+[![Build Status](https://travis-ci.org/janmattfeld/DockStack.svg?branch=master)](https://travis-ci.org/janmattfeld/DockStack) [![Image Layers](https://images.microbadger.com/badges/image/janmattfeld/dockstack.svg)](https://microbadger.com/images/janmattfeld/dockstack)
+
 # DockStack – Docker on DevStack on Docker
 
-[![Build Status](https://travis-ci.org/janmattfeld/DockStack.svg?branch=master)](https://travis-ci.org/janmattfeld/DockStack) [![](https://images.microbadger.com/badges/image/janmattfeld/dockstack.svg)](https://microbadger.com/images/janmattfeld/dockstack)
+[![Build Status](./architecture.svg)](https://travis-ci.org/janmattfeld/DockStack)
 
 > This project installs DevStack inside a Docker container and integrates Zun, the current OpenStack container project.
 
